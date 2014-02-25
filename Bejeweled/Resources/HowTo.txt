@@ -1,0 +1,10 @@
+The rectangular area of the game board starts filled with seven different colored gems. 
+The only valid move is to swap adjacent gems to make three or more gems of the same 
+color line up horizontally or vertically. When that happens, you earn points, the 
+lined-up gems disappear, the gems above them fall and the extra space is filled with 
+random gems. Once this has happened, there may once again be three or more gems lined 
+up, in which case the process is repeated. The game ends when there are no valid moves. 
+
+In the timed mode, all the above rules apply with a little twist: the progress through 
+the level goes down faster and faster by each level, and when it reaches 0, the game 
+is over.
