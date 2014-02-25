@@ -18,6 +18,7 @@
 Imports System.IO
 Imports System.Xml.Serialization
 Imports System.Runtime.Serialization.Formatters.Binary
+Imports System.Drawing.Drawing2D
 
 Public Class frmMain
 
@@ -36,6 +37,9 @@ Public Class frmMain
 
     ' Contains the list of highscores
     Public Highscores As New List(Of HighscoreTable)
+
+    ' Current rotation in degrees
+    Private Rotation As Double
 
     Private Sub frmMain_FormClosed(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
 
@@ -62,8 +66,11 @@ Public Class frmMain
             ' Increase the amount of moves
             MovesCount += 1
 
+            ' Reverse transform
+            Dim point As PointF = InvertPoint(New PointF(e.X, e.Y))
+
             ' Find the cell we clicked
-            If Game.ClickCell(Game.Board.HitCell(e.X, e.Y)) Then
+            If Game.ClickCell(Game.Board.HitCell(point.X, point.Y)) Then
 
                 ' Count all the available moves.
                 Moves = Game.FindValidMoves
@@ -90,11 +97,21 @@ Public Class frmMain
 
     End Sub
 
+    Private Function InvertPoint(Point As PointF) As PointF
+        Dim matrix As Matrix = CreateTransform(Game.Buffer, -Rotation)
+        Dim points() As PointF = {Point}
+
+        matrix.TransformPoints(points)
+        Return points(0)
+
+    End Function
+
     Private Sub GameBoard_Paint(ByVal sender As Object, ByVal e As System.Windows.Forms.PaintEventArgs) Handles Me.Paint
 
         ' Draw the content of the board
         If Not (Game Is Nothing) Then
             ' Copy the bitmap to the form
+            e.Graphics.Transform = CreateTransform(Game.Buffer, Rotation)
             e.Graphics.DrawImage(Game.Buffer, 0, 0)
         End If
 
@@ -103,12 +120,24 @@ Public Class frmMain
     Private Sub Game_BufferRedrawing() Handles Game.BufferRedrawing
 
         ' Redraw the buffer to the form
-        Me.CreateGraphics.DrawImage(Game.Buffer, 0, 0)
+        Dim g As Graphics = Me.CreateGraphics()
+
+        g.Transform = CreateTransform(Game.Buffer, Rotation)
+        g.DrawImage(Game.Buffer, 0, 0)
 
         ' Let events be executed
         Application.DoEvents()
 
     End Sub
+
+    Private Function CreateTransform(Buffer As Bitmap, Rotation As Double) As Matrix
+
+        Dim matrix As New Drawing2D.Matrix()
+
+        matrix.RotateAt(Rotation, New Point(Buffer.Width / 2, Buffer.Height / 2))
+        Return matrix
+
+    End Function
 
     Private Sub CheckPoints()
 
@@ -348,6 +377,9 @@ Public Class frmMain
 
         ' If we're not redrawing, then we're most likely not supposed to count this.
         If Not Game.IgnoreRedraw Then
+
+            ' Rotate the board
+            Rotation += If(Rnd() < 0.5, 90, -90)
 
             ' Increase the progress
             gameProgress.Increment(Game.Bonus * (My.Settings.BonusMuliplicator ^ Bonus))
