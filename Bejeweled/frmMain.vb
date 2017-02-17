@@ -377,9 +377,13 @@ Public Class frmMain
 
         ' If we're not redrawing, then we're most likely not supposed to count this.
         If Not Game.IgnoreRedraw Then
+            If My.Settings.RandomizeRotation Then
+                ' Rotate the board
+                Rotation += If(Rnd() < 0.5, 90, -90)
+            Else
+                Rotation = 0
+            End If
 
-            ' Rotate the board
-            Rotation += If(Rnd() < 0.5, 90, -90)
 
             ' Increase the progress
             gameProgress.Increment(Game.Bonus * (My.Settings.BonusMuliplicator ^ Bonus))

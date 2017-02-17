@@ -39,6 +39,7 @@ Public Class frmSettings
         txtIntervalDecrease.Text = My.Settings.IntervalDecrease
         txtIntervalMilliseconds.Text = My.Settings.IntervalMilliseconds
         txtBonusValue.Text = My.Settings.BonusValue
+        chkRandomizeRotation.Checked = My.Settings.RandomizeRotation
         txtToNextIncrease.Text = My.Settings.ToNextIncrease
         txtIntervalMultiplicator.Text = My.Settings.IntervalMultiplicator
         txtBonusMultiplicator.Text = My.Settings.BonusMuliplicator
@@ -61,6 +62,7 @@ Public Class frmSettings
             .IntervalDecrease = txtIntervalDecrease.Text
             .IntervalMilliseconds = txtIntervalMilliseconds.Text
             .BonusValue = txtBonusValue.Text
+            .RandomizeRotation = chkRandomizeRotation.Checked
             .ToNextIncrease = txtToNextIncrease.Text
             .IntervalMultiplicator = txtIntervalMultiplicator.Text
             .BonusMuliplicator = txtBonusMultiplicator.Text
